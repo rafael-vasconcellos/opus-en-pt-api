@@ -76,5 +76,5 @@ async def default_post(request_body: DefaultSugoiRequestBody):
 
 
 
-Thread(target=lambda: os.system("huey_consumer.py translation_queue.huey"), daemon=True).start()
+Thread(target=lambda: os.system("huey_consumer.py translation_queue.huey --workers 4"), daemon=True).start()
 

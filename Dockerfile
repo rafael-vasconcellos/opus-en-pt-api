@@ -11,5 +11,6 @@ EXPOSE 7860
 
 CMD ["uvicorn", "app_uvi:app", "--host", "0.0.0.0", "--port", "7860"]
 # uvicorn app_uvi:app --host 0.0.0.0 --port 7860 --reload
-#CMD sh -c '{ uvicorn app_uvi:app --host 0.0.0.0 --port 7860 & huey_consumer.py translation_queue.huey & wait; }'
+# huey_consumer.py translation_queue.huey --workers 8 --threads 2
+#CMD sh -c '{ uvicorn app_uvi:app --host 0.0.0.0 --port 7860 & huey_consumer.py translation_queue.huey --workers 4 & wait; }'
 
