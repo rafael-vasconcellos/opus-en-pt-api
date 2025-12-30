@@ -1,4 +1,4 @@
-import os
+import os, uvicorn
 from threading import Thread
 
 from fastapi import FastAPI
@@ -77,4 +77,8 @@ async def default_post(request_body: DefaultSugoiRequestBody):
 
 
 Thread(target=lambda: os.system("huey_consumer.py translation_queue.huey --workers 4"), daemon=True).start()
+def main():
+    uvicorn.run("app_uvi:app", host="0.0.0.0", port=7860, reload=False)
 
+if __name__ == "__main__":
+    main()
