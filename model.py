@@ -29,7 +29,7 @@ def run(text: str):
 def run_batch(text_list: List[str]):
     prompt = get_prompt(text_list)
     translated = model.generate(**tokenizer(prompt, return_tensors="pt", padding=True))
-    return tokenizer.decode(translated, skip_special_tokens=True)
+    return [tokenizer.decode(tokens, skip_special_tokens=True) for tokens in translated]
 
 if __name__ == "__main__":
     if "-test" in sys.argv:

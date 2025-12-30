@@ -17,13 +17,13 @@ def test_batch(texts: List[str]):
         "input_texts": texts
     })
     print(response.status_code)
-    #print(response.json())
+    print(response.content)
     end_time = time.perf_counter()
     print(f"Tempo de execução: {end_time - start_time:.4f} segundos")
 
 
 if __name__ == "__main__":
-    #test("Now let's make my mum's favourite. So three mars bars into the pan. Then we add the tuna and just stir for a bit, just let the chocolate and fish infuse. A sprinkle of olive oil and some tomato ketchup. Now smell that. Oh boy this is going to be incredible.")
+    test("Now let's make my mum's favourite. So three mars bars into the pan. Then we add the tuna and just stir for a bit, just let the chocolate and fish infuse. A sprinkle of olive oil and some tomato ketchup. Now smell that. Oh boy this is going to be incredible.")
     test_batch([
         "Tom tried to stab me.",
         "He has been to Hawaii several times."
