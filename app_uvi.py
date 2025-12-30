@@ -1,3 +1,6 @@
+import os
+from threading import Thread
+
 from fastapi import FastAPI
 from fastapi.responses import Response, RedirectResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -73,4 +76,5 @@ async def default_post(request_body: DefaultSugoiRequestBody):
 
 
 
+Thread(target=lambda: os.system("huey_consumer.py translation_queue.huey"), daemon=True).start()
 
