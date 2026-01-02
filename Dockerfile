@@ -5,12 +5,12 @@ COPY . /app
 
 RUN pip install -r requirements.txt
 # download the model
-RUN python model.py
+RUN python opus_api/model.py
 EXPOSE 7860
 
 
-CMD ["uvicorn", "app_uvi:app", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["uvicorn", "opus_api.app_uvi:app", "--host", "0.0.0.0", "--port", "7860"]
 # uvicorn app_uvi:app --host 0.0.0.0 --port 7860 --reload
-# huey_consumer.py translation_queue.huey --workers 8 --threads 2
+# huey_consumer.py opus_api.translation_queue.huey --workers 8 --threads 2
 #CMD sh -c '{ uvicorn app_uvi:app --host 0.0.0.0 --port 7860 & huey_consumer.py translation_queue.huey --workers 4 & wait; }'
 

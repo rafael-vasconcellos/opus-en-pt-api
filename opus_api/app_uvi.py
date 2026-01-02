@@ -6,7 +6,7 @@ from fastapi.responses import Response, RedirectResponse, JSONResponse, FileResp
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from translation_queue import translate, translate_batch, status
+from opus_api.translation_queue import translate, translate_batch, status
 from typing import List
 
 
@@ -76,9 +76,9 @@ async def default_post(request_body: DefaultSugoiRequestBody):
 
 
 
-Thread(target=lambda: os.system("huey_consumer.py translation_queue.huey --workers 4"), daemon=True).start()
+Thread(target=lambda: os.system("huey_consumer.py opus_api.translation_queue.huey --workers 4"), daemon=True).start()
 def main():
-    uvicorn.run("app_uvi:app", host="0.0.0.0", port=7860, reload=False)
+    uvicorn.run("opus_api.app_uvi:app", host="0.0.0.0", port=7860, reload=False)
 
 if __name__ == "__main__":
     main()

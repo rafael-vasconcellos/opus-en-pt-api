@@ -1,7 +1,7 @@
 import time, os
 import asyncio
 from huey import SqliteHuey
-from model import run, run_batch
+from opus_api.model import run, run_batch
 from typing import List
 
 

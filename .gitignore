@@ -1,3 +1,6 @@
 models
 __pycache__
 mydb/*
+dist
+build
+*-info
