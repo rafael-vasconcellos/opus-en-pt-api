@@ -55,7 +55,7 @@ async def translate_post(request_body: PostRequestBody):
     return Response(status_code= 400)
 
 
-@app.get('/api/translate/<task_id>')
+@app.get("/api/translate/{task_id}")
 async def task_id(task_id: str):
     status_code, result = await status(task_id)
     return JSONResponse(status_code=status_code, content=result)
