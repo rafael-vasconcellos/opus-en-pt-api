@@ -2,6 +2,7 @@ transformers
 sentencepiece
 sacremoses
 torch
+huggingface_hub[hf_xet]
 
 huey
 fastapi
