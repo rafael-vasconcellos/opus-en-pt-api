@@ -11,7 +11,7 @@ setup(
     install_requires=install_requires,
     entry_points={
         "console_scripts": [
-            "opus_api=opus_api.app_uvi.__main__:main",  # Substitua pelo ponto de entrada correto
+            "opus_api=opus_api.app_uvi:main",  # Substitua pelo ponto de entrada correto
         ],
     },
 )

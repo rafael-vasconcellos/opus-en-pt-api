@@ -76,7 +76,7 @@ async def default_post(request_body: DefaultSugoiRequestBody):
 
 
 
-Thread(target=lambda: os.system("huey_consumer.py opus_api.translation_queue.huey --workers 4"), daemon=True).start()
+Thread(target=lambda: os.system("huey_consumer opus_api.translation_queue.huey --workers 4"), daemon=True).start()
 def main():
     uvicorn.run("opus_api.app_uvi:app", host="0.0.0.0", port=7860, reload=False)
 
