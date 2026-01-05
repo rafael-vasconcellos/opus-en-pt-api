@@ -1,6 +1,7 @@
 import time, os
 import asyncio
 from huey import SqliteHuey
+from huey.consumer import Consumer
 from opus_api.model import run, run_batch
 from typing import List
 
@@ -39,4 +40,10 @@ async def status(task_id: str):
         "status": "pending",
     }]
 
+def run_worker():
+    consumer = Consumer(huey, workers=4)
+    consumer.run()
 
+
+if __name__ == "__main__":
+    run_worker()
