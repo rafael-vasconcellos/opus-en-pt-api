@@ -52,18 +52,12 @@ async def translate_post(request_body: PostRequestBody):
     return Response(status_code= 400)
 
 
-""" @app.post('/')
-async def default_post(request_body: DefaultSugoiRequestBody):
+@app.post('/')
+async def sugoi_default_post(request_body: DefaultSugoiRequestBody):
     if isinstance(request_body.content, list) and len(request_body.content) and request_body.message == "translate sentences":
-        task_id = str(uuid.uuid4())
-        redis_client.lpush(queue_key, json.dumps({
-            "id": task_id,
-            "input": request_body.content
-        })) # left push
-        result = query_translation(task_id)
-        if result is not None: return { "translations": ast.literal_eval(result) }
-        else: return JSONResponse(status_code= 529, content={"error": "Server overloaded"})
-    return Response(status_code= 400) """
+        status_code, result = await translate_batch(request_body.content)
+        return JSONResponse(status_code=status_code, content=result)
+    return Response(status_code= 400)
 
 
 """ @app.get("/api/translate/{task_id}")
