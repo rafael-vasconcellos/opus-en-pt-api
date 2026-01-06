@@ -6,7 +6,7 @@ from fastapi.responses import Response, RedirectResponse, JSONResponse, FileResp
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from opus_api.translation_queue_huey import translate, translate_batch, status
+from opus_api.translation_queue_semaphore import translate, translate_batch, status
 from typing import List
 
 
@@ -66,12 +66,12 @@ async def default_post(request_body: DefaultSugoiRequestBody):
     return Response(status_code= 400) """
 
 
-@app.get("/api/translate/{task_id}")
+""" @app.get("/api/translate/{task_id}")
 async def task_id(task_id: str):
     status_code, result = await status(task_id)
-    return JSONResponse(status_code=status_code, content=result)
+    return JSONResponse(status_code=status_code, content=result) """
 
-Thread(target=lambda: os.system("huey_consumer opus_api.translation_queue_huey.huey --workers 4"), daemon=True).start()
+#Thread(target=lambda: os.system("huey_consumer opus_api.translation_queue_huey.huey --workers 4"), daemon=True).start()
 
 
 def main():
