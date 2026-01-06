@@ -10,11 +10,11 @@ os.makedirs('mydb', exist_ok=True)
 huey = SqliteHuey(filename='mydb/queue.db')
 
 @huey.task()
-def translate(text: str):
+def single_task(text: str):
     return run(text)
 
 @huey.task()
-def translate_batch(text_list: List[str]):
+def batch_task(text_list: List[str]):
     return run_batch(text_list)
 
 async def status(task_id: str):
@@ -40,10 +40,19 @@ async def status(task_id: str):
         "status": "pending",
     }]
 
+def translate(text: str):
+    task = single_task(text)
+    return status(task.id)
+
+def translate_batch(texts: List[str]):
+    task = batch_task(texts)
+    return status(task.id)
+
+
+
 def run_worker():
     consumer = Consumer(huey, workers=4)
     consumer.run()
-
 
 if __name__ == "__main__":
     run_worker()

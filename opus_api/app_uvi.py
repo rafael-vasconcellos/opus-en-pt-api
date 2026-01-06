@@ -39,9 +39,7 @@ async def home():
 async def translate_get(text: str):
     input_text = text
     if isinstance(input_text, str) and len(input_text) > 0:
-        task = translate(input_text)
-        #print(type(task)); print(dir(task))
-        status_code, result = await status(task.id)
+        status_code, result = await translate(input_text)
         return JSONResponse(status_code=status_code, content=result)
     return Response(status_code= 400)
 
@@ -49,16 +47,9 @@ async def translate_get(text: str):
 @app.post('/api/translate')
 async def translate_post(request_body: PostRequestBody):
     if isinstance(request_body.input_texts, list) and len(request_body.input_texts):
-        task = translate_batch(request_body.input_texts)
-        status_code, result = await status(task.id)
+        status_code, result = await translate_batch(request_body.input_texts)
         return JSONResponse(status_code=status_code, content=result)
     return Response(status_code= 400)
-
-
-@app.get("/api/translate/{task_id}")
-async def task_id(task_id: str):
-    status_code, result = await status(task_id)
-    return JSONResponse(status_code=status_code, content=result)
 
 
 """ @app.post('/')
@@ -75,8 +66,14 @@ async def default_post(request_body: DefaultSugoiRequestBody):
     return Response(status_code= 400) """
 
 
+@app.get("/api/translate/{task_id}")
+async def task_id(task_id: str):
+    status_code, result = await status(task_id)
+    return JSONResponse(status_code=status_code, content=result)
 
 Thread(target=lambda: os.system("huey_consumer opus_api.translation_queue.huey --workers 4"), daemon=True).start()
+
+
 def main():
     uvicorn.run("opus_api.app_uvi:app", host="0.0.0.0", port=7860, reload=False)
 
