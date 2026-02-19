@@ -1,4 +1,4 @@
-import os, uvicorn
+import os, uvicorn, argparse
 from threading import Thread
 
 from fastapi import FastAPI
@@ -6,11 +6,12 @@ from fastapi.responses import Response, RedirectResponse, JSONResponse, FileResp
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from opus_api.translation_queue_semaphore import translate, translate_batch, status
+from opus_api.translation_queue_semaphore import Queue
 from typing import List
 
 
 
+queue = Queue()
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -39,7 +40,7 @@ async def home():
 async def translate_get(text: str):
     input_text = text
     if isinstance(input_text, str) and len(input_text) > 0:
-        status_code, result = await translate(input_text)
+        status_code, result = await queue.translate(input_text)
         return JSONResponse(status_code=status_code, content=result)
     return Response(status_code= 400)
 
@@ -47,7 +48,7 @@ async def translate_get(text: str):
 @app.post('/api/translate')
 async def translate_post(request_body: PostRequestBody):
     if isinstance(request_body.input_texts, list) and len(request_body.input_texts):
-        status_code, result = await translate_batch(request_body.input_texts)
+        status_code, result = await queue.translate_batch(request_body.input_texts)
         return JSONResponse(status_code=status_code, content=result)
     return Response(status_code= 400)
 
@@ -55,7 +56,7 @@ async def translate_post(request_body: PostRequestBody):
 @app.post('/')
 async def sugoi_default_post(request_body: DefaultSugoiRequestBody):
     if isinstance(request_body.content, list) and len(request_body.content) and request_body.message == "translate sentences":
-        status_code, result = await translate_batch(request_body.content)
+        status_code, result = await queue.translate_batch(request_body.content)
         return JSONResponse(status_code=status_code, content=result)
     return Response(status_code= 400)
 
@@ -69,6 +70,17 @@ async def task_id(task_id: str):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-m", 
+        "--model",
+        default="Helsinki-NLP/opus-mt-tc-big-en-pt",
+        type=str,
+        help="Set the model"
+    )
+
+    args = parser.parse_args()
+    queue.set_model(args.model)
     uvicorn.run("opus_api.app_uvi:app", host="0.0.0.0", port=7860, reload=False)
 
 if __name__ == "__main__":

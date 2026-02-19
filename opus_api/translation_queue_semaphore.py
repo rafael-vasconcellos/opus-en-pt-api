@@ -1,6 +1,6 @@
 from threading import BoundedSemaphore
 from concurrent.futures import ThreadPoolExecutor
-from opus_api.model import run, run_batch
+from opus_api.model import Opus
 from typing import List
 
 
@@ -9,32 +9,37 @@ MAX_PARALLEL = 4
 sema = BoundedSemaphore(MAX_PARALLEL)
 executor = ThreadPoolExecutor(max_workers=MAX_PARALLEL)
 
-def sema_translate(text: str):
-    with sema:
-        return run(text)
+class Queue:
+    model: Opus
+    def set_model(self, model_name):
+        self.model = Opus(model_name)
 
-def sema_translate_batch(text_list: List[str]):
-    with sema:
-        return run_batch(text_list)
+    def _sema_translate(self, text: str):
+        with sema:
+            return self.model.run(text)
 
-async def translate(text: str):
-    future = executor.submit(sema_translate, text)
-    return [
-        200, 
-        {
-            "translated_text": future.result()
-        }
-    ]
+    def _sema_translate_batch(self, text_list: List[str]):
+        with sema:
+            return self.model.run_batch(text_list)
 
-async def translate_batch(texts: List[str]):
-    future = executor.submit(sema_translate_batch, texts)
-    return [
-        200, 
-        {
-            "translated_text": future.result()
-        }
-    ]
+    async def translate(self, text: str):
+        future = executor.submit(self._sema_translate, text)
+        return [
+            200, 
+            {
+                "translated_text": future.result()
+            }
+        ]
 
-async def status(task_id: str): pass
+    async def translate_batch(self, texts: List[str]):
+        future = executor.submit(self._sema_translate_batch, texts)
+        return [
+            200, 
+            {
+                "translated_text": future.result()
+            }
+        ]
+
+
 
 
